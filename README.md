@@ -158,6 +158,86 @@ Admin:  admin@safespeak.in  / Admin@1234
 Police: police@safespeak.in / Police@1234
 ```
 
+## Deploy Online
+
+Recommended setup:
+
+- Database: MongoDB Atlas
+- Backend API: Render
+- Frontend: Vercel
+
+### 1. Create a MongoDB Atlas database
+
+Create a free Atlas cluster, add a database user, allow network access, and copy the connection string. Use a database name such as `safespeak`:
+
+```text
+mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/safespeak
+```
+
+### 2. Deploy the backend on Render
+
+Create a new Render Web Service from this repository.
+
+Use these settings if you are not using the included `render.yaml` blueprint:
+
+```text
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+```
+
+Set these Render environment variables:
+
+```env
+NODE_ENV=production
+MONGODB_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=use_a_long_random_secret
+IP_SALT=use_a_long_random_salt
+FRONTEND_URL=https://your-vercel-app.vercel.app
+MAX_FILE_SIZE_MB=50
+```
+
+After the backend deploys, test:
+
+```text
+https://your-render-service.onrender.com/api/health
+```
+
+### 3. Deploy the frontend on Vercel
+
+Import this repository into Vercel and set:
+
+```text
+Root Directory: frontend
+Build Command: npm run build
+Output Directory: dist
+```
+
+Set this Vercel environment variable:
+
+```env
+VITE_API_URL=https://your-render-service.onrender.com
+```
+
+After Vercel gives you the final frontend URL, update Render's `FRONTEND_URL` value to that exact URL and redeploy the backend.
+
+### 4. Seed production demo users
+
+If you want the demo authority logins online, run this once against the production database:
+
+```bash
+cd backend
+npm run seed
+```
+
+Make sure `MONGODB_URI` points to your Atlas database before running the seed command.
+
+### Deployment Notes
+
+- Render free services can sleep after inactivity, so the first API request may take a moment.
+- Render's local filesystem is ephemeral. Uploaded files in `backend/uploads` are fine for demos, but production should use persistent storage such as S3 or Cloudinary.
+- Vercel needs `frontend/vercel.json` so React Router pages work after a browser refresh.
+
 ## File Structure
 
 ```text
@@ -229,10 +309,6 @@ GET    /api/alerts
 GET    /api/resolve-space
 POST   /api/resolve-space
 ```
-
-
-
-
 
 ## Notes
 

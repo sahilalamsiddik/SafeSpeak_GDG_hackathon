@@ -7,11 +7,16 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+const allowedOrigins = (process.env.FRONTEND_URL || '*')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+const corsOrigin = allowedOrigins.includes('*') ? true : allowedOrigins;
 
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: corsOrigin,
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
