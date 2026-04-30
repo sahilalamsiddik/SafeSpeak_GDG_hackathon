@@ -6,6 +6,8 @@ SafeSpeak is an anonymous public safety reporting platform. Citizens can submit 
 
 
 
+
+
 **Frontend**
 - React 19
 - Vite
