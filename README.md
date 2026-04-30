@@ -1,4 +1,4 @@
-# SafeSpeak
+## SafeSpeak
 
 SafeSpeak is an anonymous public safety reporting platform. Citizens can submit incidents, and authorities can view, categorize, route, monitor, and resolve reports from a dashboard.
 
